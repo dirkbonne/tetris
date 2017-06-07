@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Tetris</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/snap.svg/0.5.1/snap.svg-min.js"></script>
+  <script src="te.js"></script>
+  <script>
+    $(document).ready(function() {
+      setup();
+    });
+  </script>
+</head>
+<body>
+  <svg id="preview" xmlns="http://www.w3.org/2000/svg" 
+       width="240" height="240">
+  </svg>
+  <svg id="main"  xmlns="http://www.w3.org/2000/svg" 
+       width="400" height="800">
+  </svg>
+</body>
+</html>
