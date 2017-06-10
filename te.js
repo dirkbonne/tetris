@@ -6,7 +6,7 @@ var gameConfig = {
     gridHeight: 20,
 
     cellPxSize: 40,
-    initialFallTime: 500,
+    initialFallTime: 300,
     // when user wants to make it fall now
     fallFastTime: 30,
     
@@ -32,6 +32,14 @@ var gameConfig = {
 	    rotx: 1, roty: 1,
 	},
 	{
+	    form: [[false, true, true],
+		   [true, true, false]],
+	    width: 3,
+	    height: 2,
+	    nrot: 2,
+	    rotx: 1, roty: 1,
+	},
+	{
 	    form: [[true, true],
 		   [true, true]],
 	    width: 2,
@@ -42,6 +50,14 @@ var gameConfig = {
 	{
 	    form: [[true, true, true],
 		   [false, false, true]],
+	    width: 3,
+	    height: 2,
+	    nrot: 4,
+	    rotx: 1, roty: 1,
+	},
+	{
+	    form: [[false, false, true],
+		   [true, true, true]],
 	    width: 3,
 	    height: 2,
 	    nrot: 4,
@@ -507,15 +523,19 @@ function setup() {
     $(document).keydown(function (evdata) {
 	switch(evdata.keyCode) {
 	case 37: // left
+	case 65: // left
 	    game.tryLeft()
 	    break;
 	case 39: // right
+	case 68: // right
 	    game.tryRight()
 	    break;
 	case 38: // up
+	case 87: // up
 	    game.tryRotate();
 	    break;
 	case 40: // down
+	case 83: // down
 	    game.dropFast();
 	    break;
 	}
