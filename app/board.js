@@ -41,7 +41,9 @@ const wallCell = {
 };
 
 Board.prototype.getStone = function(x,y) {
-    if(!this.isvalidxy(x,y)) {
+    if(y >= this.height) {
+	return null; // open at the top
+    } else if(!this.isvalidxy(x,y)) {
 	// is taken, return dummy element
 	return wallCell;
     } else {

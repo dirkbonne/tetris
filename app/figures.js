@@ -11,15 +11,23 @@ Figure.prototype.getRotation = function (rot) {
 // the originPostitions denote the placement of the figure relative to
 // the previous rotation form. Multiple are posible to allow for some
 // wiggling when there are obstructing stones in the field 
-Figure.prototype.addRotation = function(stoneList, originPositions) {
+Figure.prototype.addRotations = function(stoneList, originPositions, n) {
     var bound = c.boundingBox(stoneList);
-    this.rotations.push({
-	stoneList: stoneList,
-	originPositions: originPositions,
-	// our figures have x and y =0
-	w: (bound.x + bound.w),
-	h: (bound.y + bound.h),
-    });
+    let w = bound.x + bound.w;
+    let h = bound.y + bound.h;
+
+    this.rotations.push({ stoneList, originPositions, w, h});
+    // calculate the other rotations:
+    for(let i = 1; i < n; ++i) {
+	// swap w and h
+	let tmp = w;
+	w = h;
+	h = tmp;
+	stoneList = stoneList.map(cd => c.make(cd.y, h - 1 - cd.x)); // jshint ignore:line
+	originPositions = originPositions.map(cd => c.make(-cd.x, cd.y)); // jshint ignore:line
+	this.rotations.push({ stoneList, originPositions, w, h});
+    }
+    
     return this;
 };
 
@@ -30,89 +38,53 @@ Figure.prototype.setImageSrc = function (imageSrc) {
 
 Figure.prototype.makeMirror = function () {
     var m = new Figure();
-    for(var i = 0; i < this.rotations.length; ++i) {
-	var r = this.rotations[i];
-	var w = r.w;
-	// "jshint" complains here, but this is not a performance problem
-	m.addRotation(Array.from(r.stoneList,
-				 function (p) { return c.make(w - p.x, p.y); }), // jshint ignore:line
-		      r.originPositions);
-    }
+    var r = this.rotations[0];
+    var w = r.w;
+    m.addRotations(r.stoneList.map(p => c.make(w - 1 - p.x, p.y)), 
+		   r.originPositions, this.rotations.length);
+
     return m;
 };
 
+var wiggle2x3 = [c.make(1,0), c.make(0,0)];
+var wiggle3x2 = wiggle2x3.map(cd => c.make(-cd.x, cd.y));
+var nowiggle = [c.make(0,0)];
+var wiggle4x1 = [c.make(-1,0), c.make(-2,0), c.make(0,0), c.make(-3,0)];
+
+// xx
+// x
+// x
 var rightHookFigure = new Figure()
     .setImageSrc("images/bluestone.jpg")
-// xx
-// x
-// x
-    .addRotation([c.make(0,0), c.make(0,1), c.make(0,2), c.make(1,2)],
-		 [c.make(1,0), c.make(0,0)])
-// xxx
-//   x
-    .addRotation([c.make(0,1), c.make(1,1), c.make(2,1), c.make(2, 0)],
-		 [c.make(-1,0), c.make(0,0)])
-//  x
-//  x
-// xx
-    .addRotation([c.make(1,0), c.make(1,1), c.make(1,2), c.make(0,0)],
-		 [c.make(1,0), c.make(0,0)])
-// x
-// xxx
-    .addRotation([c.make(0,0), c.make(1,0), c.make(2,0), c.make(0, 1)],
-		 [c.make(-1,0), c.make(0,0)]);
+    .addRotations([c.make(0,0), c.make(0,1), c.make(0,2), c.make(1,2)],
+		  wiggle2x3, 4);
 
-var rightStepFigure = new Figure()
-    .setImageSrc("images/greenstone.jpg")
 //  xx
 // xx
-    .addRotation([c.make(0,0), c.make(1,0), c.make(1,1), c.make(2,1)],
-		 [c.make(-1,0), c.make(0,0)])
-// x
-// xx
-//  x
-    .addRotation([c.make(0,2), c.make(0,1), c.make(1,1), c.make(1,0)],
-		 [c.make(1,0), c.make(0,0)]);
+var rightStepFigure = new Figure()
+    .setImageSrc("images/greenstone.jpg")
+    .addRotations([c.make(0,0), c.make(1,0), c.make(1,1), c.make(2,1)],
+		  wiggle3x2, 2);
 
+// xxx
+//  x
 var tFigure = new Figure()
     .setImageSrc("images/magentastone.jpg")
-// xxx
-//  x
-    .addRotation([c.make(0,1), c.make(1,1), c.make(2,1), c.make(1,0)],
-		 [c.make(-1,0), c.make(0,0)])
-//  x
-// xx
-//  x
-    .addRotation([c.make(1,0), c.make(1,1), c.make(1,2), c.make(0,1)],
-		 [c.make(1,0), c.make(0,0)])
-//  x
-// xxx
-    .addRotation([c.make(0,0), c.make(1,0), c.make(2,0), c.make(1,1)],
-		 [c.make(-1,0), c.make(0,0)])
-// x
-// xx
-// x
-    .addRotation([c.make(0,0), c.make(0,1), c.make(0,2), c.make(1,1)],
-		 [c.make(1,0), c.make(0,0)]);
+    .addRotations([c.make(0,1), c.make(1,1), c.make(2,1), c.make(1,0)],
+		  wiggle3x2, 4);
 
+// xx
+// xx
 var squareFigure = new Figure()
     .setImageSrc("images/yellowstone.jpg")
-// xx
-// xx
-    .addRotation([c.make(0,0), c.make(1,0), c.make(0,1), c.make(1,1)],
-		 [c.make(0,0)]);
+    .addRotations([c.make(0,0), c.make(1,0), c.make(0,1), c.make(1,1)],
+		  nowiggle, 1);
 
+// xxxx
 var stickFigure = new Figure()
     .setImageSrc("images/cyanstone.jpg")
-// xxxx
-    .addRotation([c.make(0,0), c.make(1,0), c.make(2,0), c.make(3,0)],
-		 [c.make(-1,0), c.make(-2,0), c.make(0,0), c.make(-3,0)])
-// x
-// x
-// x
-// x
-    .addRotation([c.make(0,0), c.make(0,1), c.make(0,2), c.make(0,3)],
-		 [c.make(1,0), c.make(2,0), c.make(0,0), c.make(3,0)]);
+    .addRotations([c.make(0,0), c.make(1,0), c.make(2,0), c.make(3,0)],
+		 wiggle4x1, 2);
 
 
 var Figures = function() {
