@@ -1,4 +1,4 @@
-= Tetris =
+# Tetris
 
 Excercise in javascript and related technologies:
 * npm
@@ -6,7 +6,7 @@ Excercise in javascript and related technologies:
 * jquery
 * snap.svg
 
-== Building ==
+## Building
 
 You will need a reasonable new verions of nodejs and npm. I have:
 
