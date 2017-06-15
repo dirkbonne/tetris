@@ -1,5 +1,5 @@
 var Board = require("./board.js");
-var Brick = require("./brick.js");
+import Brick from "./brick.js";
 import Figures from "./figures.js";
 import BrickController from "./brick_controller.js";
 

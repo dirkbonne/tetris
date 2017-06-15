@@ -1,78 +1,80 @@
-const c = require("./coord.js");
+import c from "./coord.js";
 
-var Brick = function(figure) {
-    this.figure = figure;
-    this.imageSrc = figure.imageSrc;
-    this.stones = [];
-};
-
-// given the new rotation and the position of the brick, return the new Coord of the
-// brick so it does not collide with stones in the board.
-// This function returns null if no valid origin was found
-Brick.prototype.validateWithWiggle = function (board, ox, oy, rot) {
-    let origins = this.figure.getRotation(rot).originPositions;
-    for(let i = 0; i < origins.length; ++i) {
-	var newox = ox + origins[i].x;
-	var newoy = oy + origins[i].y;
-	if(this.validate(board, newox, newoy, rot)) {
-	    return c.make(newox, newoy);
-	}
+class Brick {
+    constructor(figure) {
+        this.figure = figure;
+        this.imageSrc = figure.imageSrc;
+        this.stones = [];
     }
-    return null;
-};
 
-Brick.prototype.rotatedWidth = function (rot) {
-    return this.figure.getRotation(rot).w;
-};
-
-Brick.prototype.rotatedHeight = function (rot) {
-    return this.figure.getRotation(rot).h;
-};
-
-Brick.prototype.validate = function (board, ox, oy, rot) {
-    var stones = this.figure.getRotation(rot).stoneList;
-    for(var j = 0; j < stones.length; ++j) {
-	if(null !== board.getStone(ox + stones[j].x, oy + stones[j].y))
-	    return false;
+    // given the new rotation and the position of the brick, return the new Coord of the
+    // brick so it does not collide with stones in the board.
+    // This function returns null if no valid origin was found
+    validateWithWiggle (board, ox, oy, rot) {
+        let origins = this.figure.getRotation(rot).originPositions;
+        for(let i = 0; i < origins.length; ++i) {
+	    let newox = ox + origins[i].x;
+	    let newoy = oy + origins[i].y;
+	    if(this.validate(board, newox, newoy, rot)) {
+	        return c.make(newox, newoy);
+	    }
+        }
+        return null;
     }
-    return true;
-};
 
-Brick.prototype.draw = function(board, x, y, rot) {
-    var form = this.figure.getRotation(rot).stoneList;
-    var paper = board.paper;
-    for(var i = 0; i < form.length; ++i) {
-	var c = form[i];
-	var pxx = board.getStonePxX(x + c.x);
-	var pxy = board.getStonePxY(y + c.y);
-	if(this.stones.length <= i) {
-	    this.stones.push(paper.image(this.imageSrc, pxx, pxy,
-					 board.cellPxSize,
-					 board.cellPxSize));
-	} else {
-	    var stone = this.stones[i];
-	    stone.attr({ x: pxx, y: pxy });
-	    if(stone.paper != paper) paper.append(stone);
-	}
+    rotatedWidth (rot) {
+        return this.figure.getRotation(rot).w;
     }
-};
 
-// put the stones on the board at the postion
-Brick.prototype.cementStones = function (board, x, y, rot) {
-    // make sure it is drawn at the postion
-    this.draw(board, x, y, rot);
-    var form = this.figure.getRotation(rot).stoneList;
-    for(var i = 0; i < form.length; ++i) {
-	var c = form[i];
-	board.setStone(x + c.x, y + c.y, this, this.stones[i]);
+    rotatedHeight (rot) {
+        return this.figure.getRotation(rot).h;
     }
-    this.stones = [];
-};
 
-Brick.prototype.removeFromPaper = function() {
-    for(var i = 0; i < this.stones.length; ++i) {
-	this.stones[i].remove();
+    validate (board, ox, oy, rot) {
+        let stones = this.figure.getRotation(rot).stoneList;
+        for(let j = 0; j < stones.length; ++j) {
+	    if(null !== board.getStone(ox + stones[j].x, oy + stones[j].y))
+	        return false;
+        }
+        return true;
     }
-};
 
-module.exports = Brick;
+    draw (board, x, y, rot) {
+        let form = this.figure.getRotation(rot).stoneList;
+        let paper = board.paper;
+        for(let i = 0; i < form.length; ++i) {
+	    let c = form[i];
+	    let pxx = board.getStonePxX(x + c.x);
+	    let pxy = board.getStonePxY(y + c.y);
+	    if(this.stones.length <= i) {
+	        this.stones.push(paper.image(this.imageSrc, pxx, pxy,
+					     board.cellPxSize,
+					     board.cellPxSize));
+	    } else {
+	        let stone = this.stones[i];
+	        stone.attr({ x: pxx, y: pxy });
+	        if(stone.paper != paper) paper.append(stone);
+	    }
+        }
+    }
+
+    // put the stones on the board at the postion
+    cementStones (board, x, y, rot) {
+        // make sure it is drawn at the postion
+        this.draw(board, x, y, rot);
+        let form = this.figure.getRotation(rot).stoneList;
+        for(let i = 0; i < form.length; ++i) {
+	    let c = form[i];
+	    board.setStone(x + c.x, y + c.y, this, this.stones[i]);
+        }
+        this.stones = [];
+    }
+
+    removeFromPaper() {
+        for(let i = 0; i < this.stones.length; ++i) {
+	    this.stones[i].remove();
+        }
+    }
+}
+
+export default Brick;

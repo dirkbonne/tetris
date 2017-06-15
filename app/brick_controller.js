@@ -1,7 +1,7 @@
 var STATE_NOT_STARTED = 0;
-var STATE_RUNNING = 0;
-var STATE_WAIT4TIMER = 0;
-var STATE_CEMENT_BRICK = 0;
+var STATE_RUNNING = 1;
+var STATE_WAIT4TIMER = 2;
+var STATE_CEMENT_BRICK = 3;
 
 export default function BrickController(board, fallDuration, fastFallDuration) {
     this.board = board;
@@ -73,7 +73,7 @@ BrickController.prototype.doStep = function ()
 };
 
 BrickController.prototype.move = function (delta) {
-    if(this.isPaused) return;
+    if(this.isPaused || this.state == STATE_NOT_STARTED) return;
     if(this.brick.validate(this.board, this.x + delta, this.y, this.rotation)) {
 	this.x += delta;
 	this.brick.draw(this.board, this.x, this.y, this.rotation);
@@ -81,7 +81,7 @@ BrickController.prototype.move = function (delta) {
 };
 
 BrickController.prototype.rotate = function (rot) {
-    if(this.isPaused) return;
+    if(this.isPaused || this.state == STATE_NOT_STARTED) return;
     var newRotation = this.rotation + rot;
 
     var newOrigin = this.brick.validateWithWiggle(this.board, this.x, this.y, newRotation);
@@ -94,6 +94,8 @@ BrickController.prototype.rotate = function (rot) {
 };
 
 BrickController.prototype.doFallFast = function (enable) {
+    if(this.isPaused || this.state == STATE_NOT_STARTED) return;
+
     if(enable != this.fallFast && this.timer > 0) {
 	this.fallFast = enable;
 	clearTimeout(this.timer);

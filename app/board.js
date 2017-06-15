@@ -41,11 +41,10 @@ const wallCell = {
 };
 
 Board.prototype.getStone = function(x,y) {
-    if(y >= this.height) {
+    if(x < 0 || x >= this.width || y < 0) {
+        return wallCell; // dummy
+    } else if(y >= this.height) {
 	return null; // open at the top
-    } else if(!this.isvalidxy(x,y)) {
-	// is taken, return dummy element
-	return wallCell;
     } else {
 	return this.grid[y][x];
     }
