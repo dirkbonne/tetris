@@ -1,21 +1,37 @@
-var path = require('path');
+const path = require('path');
+const webpack = require('webpack');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const merge = require('webpack-merge');
 
-module.exports = {
+var commonConfig = {
     entry: {
 	bundle: [
-	    './app/setup.js'
+	    './src/index.js'
 	]
     },
     
-    output: {
-	path: path.join(__dirname, 'dist'),
-	publicPath: "/dist/",
-	filename: 'bundle.js'
-    },
-    
+    plugins: [
+        new HtmlWebpackPlugin({
+            template: './src/index.html'
+        }),
+    ],
     module: {
-	rules: [	    
+	rules: [
 	    {
+                test: /\.css$/,
+                use: ['style-loader', 'css-loader'],
+            },
+            {
+                test: /\.(png|jpg|gif|svg|eot|ttf|woff|woff2)$/,
+                use: {
+                    loader: 'url-loader',
+                    options: {
+                        // Byte limit to inline files as Data URL
+                        limit: 10000
+                    }
+                },
+            },
+            {
 		test: /\.js$/, // include .js files
 		enforce: "pre", // preload the jshint loader
 		exclude: /node_modules/, // exclude any and all files in the node_modules folder
@@ -53,13 +69,14 @@ module.exports = {
 		    }
 		}
 	    },
+            
 	    {
 		test: /\.js$/,
 		exclude: /(node_modules|bower_components)/,
 		use: {
 		    loader: 'babel-loader',
 		    options: {
-			presets: ['env']
+			presets: ['env' /*, 'react'*/]
 		    }
 		}
 	    },
@@ -71,6 +88,14 @@ module.exports = {
 	    
 	]
     },
+};
+
+var devConfig = {
+    output: {
+	path: path.join(__dirname, 'build.dev'),
+	publicPath: "/build.dev/",
+	filename: '[name].js'
+    },
 
     devtool: 'inline-source-map',
     
@@ -79,6 +104,25 @@ module.exports = {
 	inline: true,
 	port: 8080
     },
-}
+};
 
-    
+var prodConfig = {
+    output: {
+	path: path.join(__dirname, 'prod'),
+	publicPath: "/prod/",
+	filename: '[name].js'
+    },
+
+    plugins: [
+        new webpack.optimize.UglifyJsPlugin({
+            compressor: {
+                warnings: false,
+            },
+        }),
+        new webpack.optimize.OccurrenceOrderPlugin(),
+    ],
+};
+
+module.exports = (env) => {
+    return merge(commonConfig, env === "prod"? prodConfig : devConfig);
+};

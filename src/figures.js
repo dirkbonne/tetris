@@ -1,4 +1,11 @@
 import c from "./coord.js";
+import bluestone from "./images/bluestone.jpg";
+import cyanstone from "./images/cyanstone.jpg";
+import greenstone from "./images/greenstone.jpg";
+import magentastone from "./images/magentastone.jpg";
+import orangestone from "./images/orangestone.jpg";
+import redstone from "./images/redstone.jpg";
+import yellowstone from "./images/yellowstone.jpg";
 
 class Figure {
     constructor() {
@@ -51,34 +58,34 @@ let wiggle4x1 = [c.make(-1,0), c.make(-2,0), c.make(0,0), c.make(-3,0)];
 // xxx
 //   x
 let rightHookFigure = new Figure()
-    .setImageSrc("images/bluestone.jpg")
+    .setImageSrc(bluestone)
     .addRotations([c.make(0,1), c.make(1,1), c.make(2,1), c.make(2,0)],
 		  wiggle3x2, 4);
 
 //  xx
 // xx
 let rightStepFigure = new Figure()
-    .setImageSrc("images/greenstone.jpg")
+    .setImageSrc(greenstone)
     .addRotations([c.make(0,0), c.make(1,0), c.make(1,1), c.make(2,1)],
 		  wiggle3x2, 2);
 
 // xxx
 //  x
 let tFigure = new Figure()
-    .setImageSrc("images/magentastone.jpg")
+    .setImageSrc(magentastone)
     .addRotations([c.make(0,1), c.make(1,1), c.make(2,1), c.make(1,0)],
 		  wiggle3x2, 4);
 
 // xx
 // xx
 let squareFigure = new Figure()
-    .setImageSrc("images/yellowstone.jpg")
+    .setImageSrc(yellowstone)
     .addRotations([c.make(0,0), c.make(1,0), c.make(0,1), c.make(1,1)],
 		  nowiggle, 1);
 
 // xxxx
 let stickFigure = new Figure()
-    .setImageSrc("images/cyanstone.jpg")
+    .setImageSrc(cyanstone)
     .addRotations([c.make(0,0), c.make(1,0), c.make(2,0), c.make(3,0)],
 		 wiggle4x1, 2);
 
@@ -86,9 +93,9 @@ let stickFigure = new Figure()
 class Figures {
     constructor() {
         this.figures = [ rightHookFigure,
-		         rightHookFigure.makeMirror().setImageSrc("images/orangestone.jpg"),
+		         rightHookFigure.makeMirror().setImageSrc(orangestone),
 		         rightStepFigure,
-		         rightStepFigure.makeMirror().setImageSrc("images/redstone.jpg"),
+		         rightStepFigure.makeMirror().setImageSrc(redstone),
 		         squareFigure,
 		         stickFigure,
 		         tFigure

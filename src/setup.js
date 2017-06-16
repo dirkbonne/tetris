@@ -2,7 +2,7 @@ import Snap from "snapsvg";
 import Game from "./game.js";
 import $ from "jquery";
 
-function setup() {
+export default function setup() {
     var game = new Game(Snap("#preview"),
 			Snap("#main"),
 			40,
@@ -46,6 +46,3 @@ function setup() {
     game.startGame();
 }
 
-$(document).ready(function() {
-    setup();
-});
